@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <algorithm>
 #include "codetree.h"
 
 // Print the Huffman code tree and list of codes for a given text file.
