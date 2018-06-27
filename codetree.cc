@@ -1,32 +1,22 @@
 #include "codetree.h"
 // Given function, to print a single char.
-void CodeTree::TreeNode::printChar(int ch)
-{
-    if (ch < 16)
-    {
+void CodeTree::TreeNode::printChar(int ch) {
+    if (ch < 16) {
         std::cout << "x0" << std::hex << ch;
-    }
-    else if (ch < 32 || ch > 126)
-    {
+    } else if (ch < 32 || ch > 126) {
         std::cout << "x" << std::hex << ch;
-    }
-    else
-    {
+    } else {
         std::cout << "\"" << (char)ch << "\"";
     }
 }
 // Given function, to print the codetree.
-void CodeTree::TreeNode::printTreeHelper(TreeNode *r, std::string pre)
-{
+void CodeTree::TreeNode::printTreeHelper(TreeNode *r, std::string pre) {
     if (r == NULL)
         return;
-    if (r->right == NULL)
-    { // implies r->left == NULL
+    if (r->right == NULL) { // implies r->left == NULL
         printChar(r->ch);
         std::cout << std::endl;
-    }
-    else
-    {
+    } else {
         std::cout << "." << std::endl;
         std::cout << pre << "|`1-";
         printTreeHelper(r->right, pre + "|   ");
@@ -37,62 +27,51 @@ void CodeTree::TreeNode::printTreeHelper(TreeNode *r, std::string pre)
 }
 
 // To print the code.
-void CodeTree::TreeNode::printCodeHelper(TreeNode *r, std::string pre)
-{
+void CodeTree::TreeNode::printCodeHelper(TreeNode *r, std::string pre) {
     if (r == NULL)
         return;
-    if (r->left == NULL)
-    { // implies r->right == NULL
+    if (r->left == NULL) { // implies r->right == NULL
         printChar(r->ch);
         std::cout << ":" << pre << std::endl;
         std::cout << std::endl;
-    }
-    else
-    {
+    } else {
         printCodeHelper(r->left, pre + "0");
         printCodeHelper(r->right, pre + "1");
     }
 }
 
-// To destory the heap, which is implemented by a vector of pointers to TreeNode.
-void CodeTree::destory(std::vector<TreeNode *> &heap)
-{
-    for (int i = 0; i < (int)heap.size(); i++)
-    {
+// To destory the heap, which is implemented by a vector of pointers to
+// TreeNode.
+void CodeTree::destory(std::vector<TreeNode *> &heap) {
+    for (int i = 0; i < (int)heap.size(); i++) {
         delete heap[i];
     }
     heap.clear();
 }
 
 // To swapDown a Node at i of a heap, to keep the heap a min-heap.
-void CodeTree::swapDown(std::vector<TreeNode *> &heap, int i)
-{
+void CodeTree::swapDown(std::vector<TreeNode *> &heap, int i) {
     int left = i * 2 + 1;
     int right = i * 2 + 2;
     int min = i;
-    if (left < (int)heap.size() && heap[left]->freq < heap[min]->freq)
-    {
+    if (left < (int)heap.size() && heap[left]->freq < heap[min]->freq) {
         min = left;
     }
-    if (right < (int)heap.size() && heap[right]->freq < heap[min]->freq)
-    {
+    if (right < (int)heap.size() && heap[right]->freq < heap[min]->freq) {
         min = right;
     }
-    if (min != i)
-    {
+    if (min != i) {
         std::swap(heap[i], heap[min]);
         swapDown(heap, min);
     }
 }
 
 // To swapUp a Node at i of a heap, to keep the heap a min-heap.
-void CodeTree::swapUp(std::vector<TreeNode *> &heap, int i)
-{
+void CodeTree::swapUp(std::vector<TreeNode *> &heap, int i) {
     if (i == 0)
         return;
     int p = (i - 1) / 2;
-    if (heap[i]->freq < heap[p]->freq)
-    {
+    if (heap[i]->freq < heap[p]->freq) {
         TreeNode *temp = heap[i];
         heap[i] = heap[p];
         heap[p] = temp;
@@ -101,22 +80,18 @@ void CodeTree::swapUp(std::vector<TreeNode *> &heap, int i)
 }
 
 // To heapify a vecotr of pointers to TreeNode.
-void CodeTree::heapify(std::vector<TreeNode *> &heap)
-{
+void CodeTree::heapify(std::vector<TreeNode *> &heap) {
     for (int i = (int)(heap.size() - 2) / 2; i >= 0; i--)
         swapDown(heap, i);
 }
 
-// Implementation of the priority queue, by passing an array of 256 integers. The
-// resulted priority queue should be a vector of pointers to TreeNode, in non-decreasing
-// order, regarding their frequencies.
-std::vector<CodeTree::TreeNode *> CodeTree::pqueue(int freq[])
-{
+// Implementation of the priority queue, by passing an array of 256 integers.
+// The resulted priority queue should be a vector of pointers to TreeNode, in
+// non-decreasing order, regarding their frequencies.
+std::vector<CodeTree::TreeNode *> CodeTree::pqueue(int freq[]) {
     std::vector<TreeNode *> heap;
-    for (int i = 0; i < 256; i++)
-    {
-        if (freq[i] != 0)
-        {
+    for (int i = 0; i < 256; i++) {
+        if (freq[i] != 0) {
             TreeNode *node = new TreeNode;
             node->left = NULL;
             node->right = NULL;
@@ -131,9 +106,9 @@ std::vector<CodeTree::TreeNode *> CodeTree::pqueue(int freq[])
     return heap;
 }
 
-// To delete the min. element of a priority queue, returning a pointer to a TreeNode.
-CodeTree::TreeNode *CodeTree::deleteMin(std::vector<TreeNode *> &heap)
-{
+// To delete the min. element of a priority queue, returning a pointer to a
+// TreeNode.
+CodeTree::TreeNode *CodeTree::deleteMin(std::vector<TreeNode *> &heap) {
     assert(!heap.empty());
     TreeNode *node = heap[0];
     heap[0] = heap[heap.size() - 1];
@@ -143,18 +118,15 @@ CodeTree::TreeNode *CodeTree::deleteMin(std::vector<TreeNode *> &heap)
 }
 
 // To insert a pointer to a TreeNode x, into a heap.
-void CodeTree::insert(std::vector<TreeNode *> &heap, TreeNode *x)
-{
+void CodeTree::insert(std::vector<TreeNode *> &heap, TreeNode *x) {
     heap.push_back(x);
     swapUp(heap, (int)heap.size() - 1);
 }
 
 // To construct a codetree by passing an array of 256 integers.
-CodeTree::CodeTree(int freq[])
-{
+CodeTree::CodeTree(int freq[]) {
     std::vector<TreeNode *> heap = pqueue(freq);
-    while (heap.size() > 1)
-    {
+    while (heap.size() > 1) {
         TreeNode *pnode = new TreeNode;
         TreeNode *node0 = new TreeNode;
         TreeNode *node1 = new TreeNode;
@@ -175,12 +147,6 @@ CodeTree::CodeTree(int freq[])
     root = heap[0];
 }
 
-void CodeTree::printCode()
-{
-    root->printCodeHelper(root, "");
-}
+void CodeTree::printCode() { root->printCodeHelper(root, ""); }
 
-void CodeTree::printTree()
-{
-    root->printTreeHelper(root, "");
-}
+void CodeTree::printTree() { root->printTreeHelper(root, ""); }
